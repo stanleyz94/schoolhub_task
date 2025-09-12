@@ -1,11 +1,11 @@
 <template>
   <q-page class="q-pa-md column q-gutter-md">
-    <div class="text-h5">Class: {{ currentClass?.name || 'Not found' }}</div>
+    <div class="text-h5">{{ t('class') }}: {{ currentClass?.name || t('notFound')  }}</div>
 
     <div class="row q-col-gutter-md">
       <div class="col-12 col-md-6">
         <q-card flat bordered>
-          <q-card-section class="text-subtitle1">Assigned Students</q-card-section>
+          <q-card-section class="text-subtitle1">{{ t('assignedStudents') }}</q-card-section>
           <q-separator />
           <q-list v-if="assigned.length">
             <q-item v-for="s in assigned" :key="s.id">
@@ -15,13 +15,13 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div v-else class="q-pa-md text-grey">No students assigned</div>
+          <div v-else class="q-pa-md text-grey">{{ t('noStudentsAssigned') }}</div>
         </q-card>
       </div>
 
       <div class="col-12 col-md-6">
         <q-card flat bordered>
-          <q-card-section class="text-subtitle1">Available Students</q-card-section>
+          <q-card-section class="text-subtitle1">{{ t('availableStudents') }}</q-card-section>
           <q-separator />
           <q-list v-if="available.length">
             <q-item v-for="s in available" :key="s.id">
@@ -31,7 +31,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div v-else class="q-pa-md text-grey">No available students</div>
+          <div v-else class="q-pa-md text-grey">{{ t('noAvailableStudents') }}</div>
         </q-card>
       </div>
     </div>
@@ -42,6 +42,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSchoolStore } from 'stores/school-store'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const route = useRoute()
 const store = useSchoolStore()

@@ -1,19 +1,20 @@
 <template>
   <q-page class="q-pa-md column">
     <div class="row items-center q-gutter-md">
-      <q-input v-model="className" label="Class name" filled dense @keyup.enter="onAdd" />
-      <q-btn color="primary" label="Add" @click="onAdd" />
+      <q-input v-model="className" :label="t('className')" filled dense @keyup.enter="onAdd" />
+      <q-btn color="primary" :label="t('add')" @click="onAdd" />
     </div>
 
     <q-separator class="q-my-md" />
 
     <q-table
-      title="Classes"
+      :title="t('classes')"
       :rows="rows"
       :columns="columns"
       row-key="id"
       flat
       :pagination="{ rowsPerPage: 10 }"
+      :no-data-label="t('noDataAvailable')"
     >
       <template #body-cell-name="props">
         <q-td :props="props">
@@ -38,18 +39,23 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSchoolStore } from 'stores/school-store'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const router = useRouter()
 const store = useSchoolStore()
 
 const className = ref('')
 
-const columns = [
-  { name: 'id', required: true, label: 'ID', align: 'left', field: 'id', sortable: true },
-  { name: 'name', label: 'Class Name', field: 'name', sortable: true },
-  { name: 'students', label: 'Students', field: 'students' },
-  { name: 'actions', label: 'Actions', field: 'actions' }
-]
+
+const columns = computed(() => [
+  { name: 'id', required: true, label: t('id'), align: 'left', field: 'id', sortable: true },
+  { name: 'name', label: t('className'), field: 'name', sortable: true },
+  { name: 'students', label: t('students'), field: 'students' },
+  { name: 'actions', label: t('actions'), field: 'actions' }
+])
+
+
 
 const rows = computed(() => store.classes)
 

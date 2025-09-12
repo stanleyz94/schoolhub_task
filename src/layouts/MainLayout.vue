@@ -15,6 +15,13 @@
           Quasar App
         </q-toolbar-title>
 
+        <q-btn-toggle
+          v-model="$i18n.locale"
+          :options="[{ label: t('en'), value: 'en-US' }, { label: t('pl'), value: 'pl' }]"
+          dense
+          unelevated
+          color="primary"
+        />
       </q-toolbar>
     </q-header>
 
@@ -25,14 +32,14 @@
     >
       <q-list>
         <q-item-label header>
-          School
+          {{ t('school') }}
         </q-item-label>
         <q-item clickable tag="router-link" :to="{ name: 'students' }">
           <q-item-section avatar>
             <q-icon name="people" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Students</q-item-label>
+            <q-item-label>{{ t('students') }}</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -41,7 +48,7 @@
             <q-icon name="class" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Classes</q-item-label>
+            <q-item-label>{{ t('classes') }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -55,7 +62,8 @@
 
 <script setup>
 import { ref } from 'vue'
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const leftDrawerOpen = ref(false)
 
