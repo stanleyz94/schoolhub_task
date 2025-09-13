@@ -48,7 +48,7 @@ const { t } = useI18n()
 const route = useRoute()
 const store = useSchoolStore()
 
-const classId = computed(() => Number(route.params.id))
+const classId = computed(() => route.params.id)
 const currentClass = computed(() => store.classById(classId.value))
 
 const assigned = computed(() => store.studentsForClass(classId.value))

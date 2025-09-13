@@ -1,68 +1,79 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
-
-// Simple in-memory IDs
-let nextStudentId = 1
-let nextClassId = 1
+import { defineStore } from 'pinia'
+import {
+  watchStudents, watchClasses,
+  addStudent as repoAddStudent,
+  removeStudent as repoRemoveStudent,
+  addClass as repoAddClass,
+  removeClass as repoRemoveClass,
+  assignStudentToClass as repoAssign,
+  removeStudentFromClass as repoUnassign
+} from 'src/services/schoolRepo'
 
 export const useSchoolStore = defineStore('school', {
   state: () => ({
-    students: [
-      // { id, firstName, lastName }
-    ],
-    classes: [
-      // { id, name, studentIds: number[] }
-    ]
+    students: [],           // { id: string, firstName, lastName }
+    classes: [],            // { id: string, name, studentIds: string[] }
+    _unsubs: []             // snapshot unsubscribers
   }),
 
   getters: {
     studentById: (state) => (id) => state.students.find(s => s.id === id),
     classById: (state) => (id) => state.classes.find(c => c.id === id),
     studentsForClass: (state) => (classId) => {
-      const clazz = state.classes.find(c => c.id === classId)
-      if (!clazz) return []
-      return clazz.studentIds.map(id => state.students.find(s => s.id === id)).filter(Boolean)
+      const classItem = state.classes.find(c => c.id === classId)
+      if (!classItem) return []
+      return classItem.studentIds
+        .map(id => state.students.find(s => s.id === id))
+        .filter(Boolean)
     }
   },
 
   actions: {
-    addStudent(firstName, lastName) {
+    init() {
+      if (this._unsubs.length) return
+      const u1 = watchStudents(rows => { this.students = rows })
+      const u2 = watchClasses(rows => { this.classes = rows })
+      this._unsubs.push(u1, u2)
+    },
+
+    dispose() {
+      this._unsubs.forEach(u => { try { u() } catch(error) {
+        console.error('Failed to unsubscribe from Firebase listener:', error)
+      } })
+      this._unsubs = []
+    },
+
+    async addStudent(firstName, lastName) {
       const trimmedFirst = String(firstName || '').trim()
       const trimmedLast = String(lastName || '').trim()
       if (!trimmedFirst || !trimmedLast) return
-      this.students.push({ id: nextStudentId++, firstName: trimmedFirst, lastName: trimmedLast })
+      await repoAddStudent(trimmedFirst, trimmedLast)
     },
 
-    removeStudent(studentId) {
-      this.students = this.students.filter(s => s.id !== studentId)
-      this.classes.forEach(c => {
-        c.studentIds = c.studentIds.filter(id => id !== studentId)
-      })
+    async removeStudent(studentId) {
+      await repoRemoveStudent(studentId)
     },
 
-    addClass(name) {
+    async addClass(name) {
       const trimmed = String(name || '').trim()
       if (!trimmed) return
-      this.classes.push({ id: nextClassId++, name: trimmed, studentIds: [] })
+      await repoAddClass(trimmed)
     },
 
-    assignStudentToClass(studentId, classId) {
-      const clazz = this.classes.find(c => c.id === classId)
-      if (!clazz) return
-      if (!clazz.studentIds.includes(studentId)) {
-        clazz.studentIds.push(studentId)
-      }
+    async removeClass(classId) {
+      await repoRemoveClass(classId)
     },
 
-    removeStudentFromClass(studentId, classId) {
-      const clazz = this.classes.find(c => c.id === classId)
-      if (!clazz) return
-      clazz.studentIds = clazz.studentIds.filter(id => id !== studentId)
+    async assignStudentToClass(studentId, classId) {
+      await repoAssign(studentId, classId)
+    },
+
+    async removeStudentFromClass(studentId, classId) {
+      await repoUnassign(studentId, classId)
     }
   }
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useSchoolStore, import.meta.hot))
+  import.meta.hot.accept
 }
-
-
