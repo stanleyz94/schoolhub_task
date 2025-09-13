@@ -8,6 +8,9 @@
     <q-separator class="q-my-md" />
 
     <q-table
+      :grid="$q.screen.xs"
+      :rows-per-page-label="t('recordsPerPage')"
+      :pagination-label="paginationLabel"
       :title="t('classes')"
       :rows="rows"
       :columns="columns"
@@ -31,6 +34,23 @@
           <q-btn color="negative" flat dense icon="delete" @click="remove(props.row.id)" />
         </q-td>
       </template>
+
+      <!-- Grid template for mobile -->
+      <template #item="props">
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-4">
+          <q-card flat bordered>
+            <q-card-section>
+              <div class="text-h6">{{ props.row.name }}</div>
+              <div class="text-caption text-grey">{{ t('students') }}: {{ props.row.studentIds.length }}</div>
+             
+            </q-card-section>
+            <q-card-actions>
+              <q-btn flat color="primary" :label="t('viewDetails')" @click="goToDetails(props.row.id)" />
+              <q-btn color="negative" flat dense icon="delete" @click="remove(props.row.id)" />
+            </q-card-actions>
+          </q-card>
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -46,6 +66,17 @@ const router = useRouter()
 const store = useSchoolStore()
 
 const className = ref('')
+
+
+const paginationLabel = computed(() => {
+  return (firstRowIndex, endRowIndex, totalRowsNumber) => {
+    return t('paginationRange', { 
+      start: firstRowIndex, 
+      end: endRowIndex, 
+      total: totalRowsNumber 
+    })
+  }
+})
 
 
 const columns = computed(() => [

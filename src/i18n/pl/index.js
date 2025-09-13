@@ -12,6 +12,7 @@ export default {
   goHome: 'Wróć do strony głównej',
   oopsNothingHere: 'Ups. Nic tu nie ma...',
   noDataAvailable: 'Brak dostępnych danych',
+  viewDetails: 'Zobacz szczegóły',
   en: 'Angielski',
   pl: 'Polski',
 
@@ -19,6 +20,8 @@ export default {
   school: 'Szkoła',
   students: 'Uczniowie',
   classes: 'Klasy',
+  recordsPerPage: 'Rekordów na stronie:',
+  paginationRange: '{start}-{end} z {total}',
 
   // Students
   firstName: 'Imię',

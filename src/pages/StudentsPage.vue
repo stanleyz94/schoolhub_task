@@ -9,6 +9,9 @@
     <q-separator class="q-my-md" />
 
     <q-table
+      :grid="$q.screen.xs"
+       :rows-per-page-label="t('recordsPerPage')"
+      :pagination-label="paginationLabel"
       :title="t('students')"
       :rows="rows"
       :columns="columns"
@@ -21,6 +24,21 @@
         <q-td :props="props">
           <q-btn color="negative" flat dense icon="delete" @click="remove(props.row.id)" />
         </q-td>
+      </template>
+
+      <!-- Grid template for mobile -->
+      <template #item="props">
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-4">
+          <q-card flat bordered>
+            <q-card-section>
+              <div class="text-h6">{{ props.row.firstName }} {{ props.row.lastName }}</div>
+              <div class="text-caption text-grey">ID: {{ props.row.id }}</div>
+            </q-card-section>
+            <q-card-actions align="center">
+              <q-btn color="negative" flat dense icon="delete" @click="remove(props.row.id)" />
+            </q-card-actions>
+          </q-card>
+        </div>
       </template>
     </q-table>
   </q-page>
@@ -37,6 +55,16 @@ const store = useSchoolStore()
 
 const firstName = ref('')
 const lastName = ref('')
+
+const paginationLabel = computed(() => {
+  return (firstRowIndex, endRowIndex, totalRowsNumber) => {
+    return t('paginationRange', { 
+      start: firstRowIndex, 
+      end: endRowIndex, 
+      total: totalRowsNumber 
+    })
+  }
+})
 
 
 const columns = computed(() => [

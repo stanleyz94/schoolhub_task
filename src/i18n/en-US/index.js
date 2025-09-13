@@ -9,6 +9,7 @@ export default {
   goHome: 'Go Home',
   oopsNothingHere: 'Oops. Nothing here...',
   noDataAvailable: 'No data available',
+  viewDetails: 'View Details',
   en: 'English',
   pl: 'Polish',
 
@@ -16,6 +17,8 @@ export default {
   school: 'School',
   students: 'Students',
   classes: 'Classes',
+  recordsPerPage: 'Records per page:',
+  paginationRange: '{start}-{end} of {total}',
 
   // Students
   firstName: 'First name',
